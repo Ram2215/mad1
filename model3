@@ -11,7 +11,7 @@ acticity.xml
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/white"
-        android:text="GAME DETAILS  ⚽🏏"
+        android:text="SHOPPING CART ðŸ›’"
         android:layout_marginLeft="80dp"
         android:layout_marginBottom="15dp"
         android:textStyle="bold"
@@ -22,7 +22,7 @@ acticity.xml
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="#4B4545"
-        android:hint="Search for the game"
+        android:hint="Search for the products"
         android:textColorHint="#494040"
         android:background="@color/white"
         android:padding="10dp"/>
@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
 
     ListView listView;
     AutoCompleteTextView searchView;
-    ArrayList<String> GameList;
+    ArrayList<String> ProductList;
     ArrayAdapter<String> adapter;
 
     @Override
@@ -66,30 +66,23 @@ public class MainActivity extends AppCompatActivity {
         listView = findViewById(R.id.listView);
         searchView = findViewById(R.id.autoCompleteTextView);
 
-        GameList = new ArrayList<>();
-        GameList.add("Cricket");
-        GameList.add("Tennis");
-        GameList.add("Football");
-        GameList.add("Badminton");
-        GameList.add("Kabaddi");
-        GameList.add("WWE");
-        GameList.add("Judo");
-        GameList.add("Karate");
-        GameList.add("Sumo Wrestling");
-        GameList.add("Athletics");
-        GameList.add("Swimming");
-        GameList.add("Kung Fu");
-        GameList.add("Basketball");
-        GameList.add("Hockey");
-        GameList.add("Table Tennis");
-        GameList.add("Baseball");
-        GameList.add("Rugby");
-        GameList.add("Chess");
-        GameList.add("Boxing");
+        ProductList = new ArrayList<>();
+        ProductList.add("Cricket Kit");
+        ProductList.add("Tennis Kit");
+        ProductList.add("Football Kit");
+        ProductList.add("Badminton Kit");
+        ProductList.add("Glass");
+        ProductList.add("Dress");
+        ProductList.add("Mike");
+        ProductList.add("Groceries");
+        ProductList.add("Toys");
+        ProductList.add("Swimming Suit");
+        ProductList.add("Net");
+        ProductList.add("Water Bottle");
+        ProductList.add("Fan");
 
 
-
-        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, GameList);
+        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, ProductList);
 
         listView.setAdapter(adapter);
         searchView.setAdapter(adapter);
@@ -97,9 +90,9 @@ public class MainActivity extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String selectedGame = GameList.get(position);
+                String selectedProduct = ProductList.get(position);
                 Intent intent = new Intent(MainActivity.this, ProductDetailActivity.class);
-                intent.putExtra("game_name", selectedGame);
+                intent.putExtra("product_name", selectedProduct);
                 startActivity(intent);
             }
         });
@@ -107,14 +100,15 @@ public class MainActivity extends AppCompatActivity {
         searchView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String selectedGame = adapter.getItem(position);
+                String selectedProduct = adapter.getItem(position);
                 Intent intent = new Intent(MainActivity.this, ProductDetailActivity.class);
-                intent.putExtra("game_name", selectedGame);
+                intent.putExtra("product_name", selectedProduct);
                 startActivity(intent);
             }
         });
     }
 }
+
 
 activity_product_detail.xml
 <?xml version="1.0" encoding="utf-8"?>
@@ -127,11 +121,11 @@ activity_product_detail.xml
     android:padding="20dp">
 
     <TextView
-        android:id="@+id/GameDetails"
+        android:id="@+id/ProductDetails"
         android:textColor="@color/white"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Game Details"
+        android:text="Product Details"
         android:textSize="22sp"
         android:textStyle="bold"/>
 
@@ -149,7 +143,7 @@ activity_product_detail.xml
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/white"
-        android:text="  🏀🏸🥋🥊🏓⚽🏏!!"
+        android:text=" ðŸŽ€âš½ðŸ‘“ðŸ¥¼ðŸ‘ŸðŸðŸŽ¸ðŸ“¸!!"
         android:layout_marginLeft="40dp"
         android:layout_marginTop="205dp"
         android:textStyle="bold"
@@ -157,33 +151,37 @@ activity_product_detail.xml
 
 </LinearLayout>
 
+
 ProductDetailActivity.java
 package com.example.model_3;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class ProductDetailActivity extends AppCompatActivity {
 
-    TextView GameDetails;
+    TextView ProductDetails;
     TextView description;
 
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_detail);
 
-        GameDetails = findViewById(R.id.GameDetails);
+        ProductDetails = findViewById(R.id.ProductDetails);
         description = findViewById(R.id.description);
 
-        String game_name = getIntent().getStringExtra("game_name");
+        String product_name = getIntent().getStringExtra("product_name");
 
-        GameDetails.setText("Game: " + game_name);
-        description.setText("Description :"+ "This is the game was selected by you!");
+        ProductDetails.setText("Product: " + product_name);
+        description.setText("Description :"+ "This is the products was selected by you!");
 
     }
 }
+
 
 AndroidManifest.xml
 <activity android:name=".ProductDetailActivity"/>
