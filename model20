@@ -84,35 +84,73 @@ activity_main.xml
 MainActivity.java
 package com.example.model_20;
 
-import android.database.Cursor;
+import android.content.ContentValues;
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.widget.TextView;
+import android.view.View;
+import android.widget.*;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-public class ViewBillsActivity extends AppCompatActivity {
-    TextView tvAllBills;
+public class MainActivity extends AppCompatActivity {
+    EditText etName, etUnits;
+    TextView tvBill;
+    Button btnGenerate, btnViewBills;
     SQLiteDatabase db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_view_bills);
-        tvAllBills = findViewById(R.id.tvAllBills);
+        setContentView(R.layout.activity_main);
+        etName = findViewById(R.id.etName);
+        etUnits = findViewById(R.id.etUnits);
+        tvBill = findViewById(R.id.tvBill);
+        btnGenerate = findViewById(R.id.btnGenerate);
+        btnViewBills = findViewById(R.id.btnViewBills);
+	Button btnDeleteAll = findViewById(R.id.btnDeleteAll);
+
         db = openOrCreateDatabase("ElectricityDB", MODE_PRIVATE, null);
-        Cursor cursor = db.rawQuery("SELECT * FROM bills", null);
-        StringBuilder builder = new StringBuilder();
-        while (cursor.moveToNext()) {
-            builder.append("Customer: ").append(cursor.getString(1))
-                    .append("\nUnits: ").append(cursor.getInt(2))
-                    .append("\nAmount: ₹").append(cursor.getDouble(3))
-                    .append("\n\n");
-        }
-        cursor.close();
-        tvAllBills.setText(builder.toString());
+        db.execSQL("CREATE TABLE IF NOT EXISTS bills(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, units INTEGER, amount REAL)");
+
+        btnGenerate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String name = etName.getText().toString();
+                int units = Integer.parseInt(etUnits.getText().toString());
+                double amount;
+                if (units <= 100) amount = units * 1.5;
+                else if (units <= 300) amount = 100 * 1.5 + (units - 100) * 2.5;
+                else amount = 100 * 1.5 + 200 * 2.5 + (units - 300) * 3.5;
+                String bill = "Customer: " + name + "\nUnits: " + units + "\nAmount: â‚¹" + amount;
+                tvBill.setText(bill);
+                ContentValues cv = new ContentValues();
+                cv.put("name", name);
+                cv.put("units", units);
+                cv.put("amount", amount);
+                db.insert("bills", null, cv);
+            }
+        });
+
+        btnViewBills.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MainActivity.this, ViewBillsActivity.class));
+            }
+        });
+
+        btnDeleteAll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                db.execSQL("DELETE FROM bills");
+                Toast.makeText(MainActivity.this, "All bills deleted", Toast.LENGTH_SHORT).show();
+                tvBill.setText("");
+            }
+        });
+
     }
 }
+
 
 activity_view_bills.xml
 <?xml version="1.0" encoding="utf-8"?>
@@ -164,7 +202,7 @@ public class ViewBillsActivity extends AppCompatActivity {
         while (cursor.moveToNext()) {
             builder.append("Customer: ").append(cursor.getString(1))
                     .append("\nUnits: ").append(cursor.getInt(2))
-                    .append("\nAmount: ₹").append(cursor.getDouble(3))
+                    .append("\nAmount: â‚¹").append(cursor.getDouble(3))
                     .append("\n\n");
         }
         cursor.close();
